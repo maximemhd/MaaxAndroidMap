@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
                 // Customize map with markers, polylines, etc.
                 map = mapboxMap;
+                mapboxMap.setStyleUrl("mapbox://styles/maximemhd/cj487m11i1q392rph27vlbamc");
 
                 mapboxMap.getMarkerViewManager().addMarkerViewAdapter(
                         new PulseMarkerViewAdapter(MainActivity.this));
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         super.onResume();
         mapView.onResume();
     }
+
 
     @Override
     protected void onStart() {

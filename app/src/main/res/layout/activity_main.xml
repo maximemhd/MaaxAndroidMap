@@ -13,10 +13,9 @@ tools:context="io.github.maximemhd.maaxmap.MainActivity">
     android:id="@+id/mapView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    mapbox:mapbox_styleUrl="@string/TopoStyle"
+    mapbox:mapbox_styleUrl="@string/mapbox_style_light"
     mapbox:mapbox_uiRotateGestures="false"
-
     />
-
+    <!-- mapbox:mapbox_styleUrl="@string/TopoStyle"-->
 
 </android.support.design.widget.CoordinatorLayout>
