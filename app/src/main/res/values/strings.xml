@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MaaxMap</string>
+    <string name="TopoStyle">mapbox://styles/maximemhd/cj487m11i1q392rph27vlbamc</string>
+    <string name="OrientStyle">mapbox://styles/maximemhd/cj0eeeken004d2spbl3biru64</string>
+    <!--Basic user location permission toasts-->
+    <string name="user_location_permission_explanation">This app needs location permissions in order to show its functionality.</string>
+    <string name="user_location_permission_not_granted">You didn\'t grant location permissions.</string>
+
+</resources>
