@@ -2,14 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/menu_orient"
-        android:checkable="true"
+        android:id="@+id/menu_topo"
         android:title="Topo map"></item>
 
     <item
-        android:id="@+id/menu_topo"
-        android:checkable="true"
-        android:title="ifRoom"></item>
+        android:id="@+id/menu_orient"
+        android:title="Orienteering map"></item>
 
 
 </menu>
