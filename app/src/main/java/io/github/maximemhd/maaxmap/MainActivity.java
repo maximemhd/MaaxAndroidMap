@@ -70,8 +70,7 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
                 mapboxMap.getMarkerViewManager().addMarkerViewAdapter(
                         new PulseMarkerViewAdapter(MainActivity.this));
-                Toast.makeText(MainActivity.this, "Map ready0",
-                        Toast.LENGTH_LONG).show();
+               
                 userMarker = mapboxMap.addMarker(
                         new PulseMarkerViewOptions()
                                 .position(new LatLng(0, 0))
@@ -79,8 +78,6 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                         new MarkerViewManager.OnMarkerViewAddedListener() {
                             @Override
                             public void onViewAdded(@NonNull MarkerView markerView) {
-                                Toast.makeText(MainActivity.this, "Map ready1",
-                                        Toast.LENGTH_LONG).show();
                                 // Check if user has granted location permission
                                 if (!PermissionsManager.areLocationPermissionsGranted(MainActivity.this)) {
                                     permissionsManager = new PermissionsManager(MainActivity.this);
