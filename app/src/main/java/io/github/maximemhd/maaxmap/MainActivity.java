@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -83,9 +84,28 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         });
 
         // Set up autocomplete widget
-        GeocoderAutoCompleteView autocomplete = (GeocoderAutoCompleteView) findViewById(R.id.query);
+        final GeocoderAutoCompleteView autocomplete = (GeocoderAutoCompleteView) findViewById(R.id.query);
         autocomplete.setAccessToken(Mapbox.getAccessToken());
-        autocomplete.setType(GeocodingCriteria.TYPE_POI);
+        autocomplete.setType(GeocodingCriteria.TYPE_PLACE);
+
+        autocomplete.setOnKeyListener(new GeocoderAutoCompleteView.OnKeyListener(){
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                GeocoderAutoCompleteView et = (GeocoderAutoCompleteView) v;
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    hideOnScreenKeyboard();
+                    CarmenFeature feature = (CarmenFeature) et.getText();
+                    Position position = feature.asPosition();
+                    updateMap(position.getLatitude(), position.getLongitude());
+
+                    return true;
+                }
+                return false;
+            }
+        });
+
         autocomplete.setOnFeatureListener(new GeocoderAutoCompleteView.OnFeatureListener() {
             @Override
             public void onFeatureClick(CarmenFeature feature) {
