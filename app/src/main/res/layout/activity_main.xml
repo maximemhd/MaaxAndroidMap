@@ -17,6 +17,27 @@ tools:context="io.github.maximemhd.maaxmap.MainActivity">
         mapbox:mapbox_uiRotateGestures="false">
 
     </com.mapbox.mapboxsdk.maps.MapView>
+
+
+    <com.mapbox.services.android.ui.geocoder.GeocoderAutoCompleteView
+        android:id="@+id/query"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="70dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="14dp"
+        android:background="@android:color/white"
+        android:elevation="12dp"
+        android:hint="Search"
+        android:padding="10dp"
+        android:maxLines="1"
+        android:textColor="@android:color/black"/>
+
     <!-- mapbox:mapbox_styleUrl="@string/TopoStyle"-->
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/location_toggle_fab"

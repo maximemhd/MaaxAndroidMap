@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -22,8 +23,10 @@ import io.github.maximemhd.maaxmap.R;
 import io.github.maximemhd.maaxmap.PulseMarkerView;
 import io.github.maximemhd.maaxmap.PulseMarkerViewOptions;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.annotations.MarkerView;
 import com.mapbox.mapboxsdk.annotations.MarkerViewManager;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -35,6 +38,10 @@ import com.mapbox.services.android.telemetry.location.LocationEngine;
 import com.mapbox.services.android.telemetry.location.LocationEngineListener;
 import com.mapbox.services.android.telemetry.permissions.PermissionsListener;
 import com.mapbox.services.android.telemetry.permissions.PermissionsManager;
+import com.mapbox.services.android.ui.geocoder.GeocoderAutoCompleteView;
+import com.mapbox.services.api.geocoding.v5.GeocodingCriteria;
+import com.mapbox.services.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.services.commons.models.Position;
 
 import java.util.List;
 
@@ -74,6 +81,20 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
             }
         });
+
+        // Set up autocomplete widget
+        GeocoderAutoCompleteView autocomplete = (GeocoderAutoCompleteView) findViewById(R.id.query);
+        autocomplete.setAccessToken(Mapbox.getAccessToken());
+        autocomplete.setType(GeocodingCriteria.TYPE_POI);
+        autocomplete.setOnFeatureListener(new GeocoderAutoCompleteView.OnFeatureListener() {
+            @Override
+            public void onFeatureClick(CarmenFeature feature) {
+                hideOnScreenKeyboard();
+                Position position = feature.asPosition();
+                updateMap(position.getLatitude(), position.getLongitude());
+            }
+        });
+
         floatingActionButton = (FloatingActionButton) findViewById(R.id.location_toggle_fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,6 +241,19 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
         locationEngine.addLocationEngineListener(locationListener);
     }
 
+    private void updateMap(double latitude, double longitude) {
+        // Build marker
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(latitude, longitude)));
+
+        // Animate camera to geocoder result location
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(latitude, longitude))
+                .zoom(15)
+                .build();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), 5000, null);
+    }
+
     // Custom marker view used for pulsing the background view of marker.
     private static class PulseMarkerViewAdapter extends MapboxMap.MarkerViewAdapter<PulseMarkerView> {
 
@@ -291,4 +325,15 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
 
         }
         }
+    private void hideOnScreenKeyboard() {
+        try {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            if (getCurrentFocus() != null) {
+                imm.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        } catch (Exception exception) {
+            throw new RuntimeException(exception);
+        }
+
+    }
 }
