@@ -7,6 +7,7 @@ import android.content.Context;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -46,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
     private LocationEngine locationEngine;
     private LocationEngineListener locationListener;
     private PermissionsManager permissionsManager;
+    private FloatingActionButton floatingActionButton;
+    int nbrClick = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,27 +71,51 @@ public class MainActivity extends AppCompatActivity implements PermissionsListen
                 map = mapboxMap;
                 mapboxMap.setStyleUrl("mapbox://styles/maximemhd/cj487m11i1q392rph27vlbamc");
 
-                mapboxMap.getMarkerViewManager().addMarkerViewAdapter(
-                        new PulseMarkerViewAdapter(MainActivity.this));
-               
-                userMarker = mapboxMap.addMarker(
-                        new PulseMarkerViewOptions()
-                                .position(new LatLng(0, 0))
-                                .anchor(0.5f, 0.5f),
-                        new MarkerViewManager.OnMarkerViewAddedListener() {
-                            @Override
-                            public void onViewAdded(@NonNull MarkerView markerView) {
-                                // Check if user has granted location permission
-                                if (!PermissionsManager.areLocationPermissionsGranted(MainActivity.this)) {
-                                    permissionsManager = new PermissionsManager(MainActivity.this);
-                                    permissionsManager.requestLocationPermissions(MainActivity.this);
-                                } else {
-                                    enableLocation();
-                                }
-                                animateMarker(markerView);
-                            }
-                        });
 
+            }
+        });
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.location_toggle_fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (map != null) {
+                    nbrClick++;
+                    if(nbrClick==1){
+                        map.getMarkerViewManager().addMarkerViewAdapter(
+                                new PulseMarkerViewAdapter(MainActivity.this));
+
+                        userMarker = map.addMarker(
+                                new PulseMarkerViewOptions()
+                                        .position(new LatLng(0, 0))
+                                        .anchor(0.5f, 0.5f),
+                                new MarkerViewManager.OnMarkerViewAddedListener() {
+                                    @Override
+                                    public void onViewAdded(@NonNull MarkerView markerView) {
+                                        // Check if user has granted location permission
+                                        if (!PermissionsManager.areLocationPermissionsGranted(MainActivity.this)) {
+                                            permissionsManager = new PermissionsManager(MainActivity.this);
+                                            permissionsManager.requestLocationPermissions(MainActivity.this);
+                                        } else {
+                                            enableLocation();
+                                        }
+                                        animateMarker(markerView);
+                                    }
+                                });
+
+                    }else {
+                        // Check if user has granted location permission
+                        if (!PermissionsManager.areLocationPermissionsGranted(MainActivity.this)) {
+                            permissionsManager = new PermissionsManager(MainActivity.this);
+                            permissionsManager.requestLocationPermissions(MainActivity.this);
+                        } else {
+                            Location lastLocation = locationEngine.getLastLocation();
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation), 16));
+                            userMarker.setPosition(new LatLng(lastLocation));
+                        }
+                        //animateMarker(markerView);
+                    }
+
+                }
             }
         });
     }
